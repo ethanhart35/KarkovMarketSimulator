@@ -1,5 +1,6 @@
 
 
+
 document.getElementById('create').addEventListener('click', async () => {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
@@ -80,30 +81,7 @@ document.getElementById('login').addEventListener('click', async () => {
 
 
 
-document.getElementById('raid').addEventListener('click', () => {
-  // Function to simulate loot drops
-  function raidLoot(currentloot) {
-      const lootResult = [];
 
-      // Iterate over the loot table to determine loot based on rarity
-      currentloot.forEach(item => {
-          const dropChance = Math.random() * 100; // Random number between 0 and 100
-          if (dropChance < item.rare) {
-              lootResult.push(item.name); // If random number is less than rarity, the item is awarded
-          }
-      });
-
-      // If no loot was found, return a message stating no loot
-      return lootResult.length > 0 ? lootResult : ["No loot"];
-  }
-
-  // Call raidLoot function and display the results
-  const lootObtained = raidLoot(lootTable);
-
-  // Display the results
-  const lootDiv = document.getElementById('lootResult');
-  lootDiv.innerHTML = `<p>Loot Obtained: ${lootObtained.join(', ')}</p>`;
-});
 
 
 //import { loot } from "./loot.js";

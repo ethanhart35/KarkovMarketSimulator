@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="raid.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="module" src="app.js" charset="utf-8"></script>
-    <script type="module" src="loot.js" charset="utf-8"></script>
     <title>Karkov</title>
 </head>
 
@@ -31,6 +29,7 @@
     <div class="button-container">
         <button id="roll">Enter Raid</button>
     </div>
+    
     <script>
         // Immediately check for the username in localStorage
         const username = localStorage.getItem('username');
@@ -43,6 +42,7 @@
             usernameDisplay.textContent = 'Guest';
         }
     </script>
+    <script type="module" src="raid.js" charset="utf-8" defer></script>
 </body>
 
 </html>

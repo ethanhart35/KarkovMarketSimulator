@@ -93,6 +93,38 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Route to sell the loot result in the database
+app.post('/sell', async (req, res) => {
+    const { username, balance } = req.body;
+    console.log(balance)
+    if (!username || !balance) {
+        return res.status(400).json({ success: false, message: 'Invalid input data.' });
+    }
+
+    try {
+        const db = await connectToDatabase();
+        const users = db.collection('Users');
+
+        const result = await users.updateOne(
+            { username: username },
+            { $inc: { balance: balance } } // Add loot to user's stash array
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ success: true });
+        } else {
+            res.status(404).json({ success: false, message: 'User not found.' });
+        }
+    } catch (error) {
+        console.error('Error saving loot:', error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+});
+
+
+
+
+
 // Global error handler middleware
 app.use((err, req, res, next) => {
     const defaultErr = {
