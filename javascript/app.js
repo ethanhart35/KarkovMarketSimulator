@@ -1,64 +1,109 @@
 
-document.getElementById('create').addEventListener('click', async () => {
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  console.log(username, password);
-  // Send the data to the server via a POST request
-  try {
-    console.log(username, password);
-      const response = await fetch('/addUser', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-      });
 
-      const result = await response.json();
-        if (result.success) {
-          localStorage.setItem('username', username);
-          // Redirect to raid page on successful login
-          window.location.href = 'raid.html'; // Change this to your target page
-        } else {
-            alert("FAILED"); // Alert the error message
-        }
+document.getElementById('create').addEventListener('click', async () => {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  // Validate input fields
+  if (!username || !password) {
+    alert('Username and password cannot be empty.');
+    return;
+  }
+
+  // Disable the button while creating an account
+  const createButton = document.getElementById('create');
+  createButton.disabled = true;
+
+  try {
+    const response = await fetch('/addUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      localStorage.setItem('username', username);
+      window.location.href = 'raid.html'; // Change this to your target page
+    } else {
+      alert('Account creation failed: ' + (result.message || 'Unknown error'));
+    }
   } catch (error) {
-      console.error('Error creating account:', error);
-      alert('Account Already exits');
+    console.error('Error creating account:', error);
+    alert('Account already exists or server error.');
+  } finally {
+    // Re-enable the button after process is done
+    createButton.disabled = false;
   }
 });
 
 document.getElementById('login').addEventListener('click', async () => {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-  if (!username && !password){
-    console.log("WRONG")
-    return
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  // Validate input fields
+  if (!username || !password) {
+    alert('Username and password cannot be empty.');
+    return;
   }
-    // Send the data to the server via a POST request
-    try {
-      console.log(username, password);
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
-  
-        const result = await response.json();
-        if (result.success) {
-          localStorage.setItem('username', username);
-          // Redirect to raid page on successful login
-          window.location.href = 'raid.html'; // Change this to your target page
-        } else {
-            alert("Wrong Password"); // Alert the error message
-        }
-    } catch (error) {
-        console.error('Error getting account:', error);
-        alert('Account doesnt exist');
+
+  // Disable the button while logging in
+  const loginButton = document.getElementById('login');
+  loginButton.disabled = true;
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      localStorage.setItem('username', username);
+      window.location.href = 'raid.html'; // Change this to your target page
+    } else {
+      alert('Login failed: ' + (result.message || 'Wrong password.'));
     }
-  });
+  } catch (error) {
+    console.error('Error during login:', error);
+    alert('Account doesn\'t exist or server error.');
+  } finally {
+    // Re-enable the button after process is done
+    loginButton.disabled = false;
+  }
+});
+
+
+
+document.getElementById('raid').addEventListener('click', () => {
+  // Function to simulate loot drops
+  function raidLoot(currentloot) {
+      const lootResult = [];
+
+      // Iterate over the loot table to determine loot based on rarity
+      currentloot.forEach(item => {
+          const dropChance = Math.random() * 100; // Random number between 0 and 100
+          if (dropChance < item.rare) {
+              lootResult.push(item.name); // If random number is less than rarity, the item is awarded
+          }
+      });
+
+      // If no loot was found, return a message stating no loot
+      return lootResult.length > 0 ? lootResult : ["No loot"];
+  }
+
+  // Call raidLoot function and display the results
+  const lootObtained = raidLoot(lootTable);
+
+  // Display the results
+  const lootDiv = document.getElementById('lootResult');
+  lootDiv.innerHTML = `<p>Loot Obtained: ${lootObtained.join(', ')}</p>`;
+});
 
 
 //import { loot } from "./loot.js";
